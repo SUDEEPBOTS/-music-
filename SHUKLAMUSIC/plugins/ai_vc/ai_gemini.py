@@ -23,7 +23,10 @@ Rules:
 - Human jaisa real conversation
 """
 
-async def ask_gf(prompt: str) -> str:
+async def ask_gemini(prompt: str) -> str:
+    """
+    Wrapper name fixed so plugin can import it.
+    """
     loop = asyncio.get_event_loop()
     def _run():
         r = MODEL.generate_content([GF_SYSTEM_PROMPT, prompt])
