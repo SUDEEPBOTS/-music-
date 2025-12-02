@@ -1,6 +1,5 @@
 import asyncio
 import os
-
 from gtts import gTTS
 
 BASE_DIR = os.path.join(os.getcwd(), "downloads", "ai_vc")
@@ -12,14 +11,21 @@ def _ensure_dir() -> None:
 
 
 def _sync_tts(text: str, path: str, lang: str = "hi") -> None:
-    # lang ko "en" kar sakta hai agar English chahiye
-    tts = gTTS(text=text, lang=lang)
-    tts.save(path)
+    if not text.strip():
+        text = "Mujhe koi reply nahi mila."
+
+    try:
+        tts = gTTS(text=text, lang=lang)
+        tts.save(path)
+    except Exception:
+        # Retry agar gTTS service busy ho
+        tts = gTTS(text=text, lang=lang)
+        tts.save(path)
 
 
 async def synthesize_speech(text: str, chat_id: int, lang: str = "hi") -> str:
     """
-    Text ko mp3 file me convert karta hai, path return karta hai.
+    Text ko mp3 file me convert karta hai, VC playback ke liye.
     """
     _ensure_dir()
     filename = f"ai_vc_{chat_id}.mp3"
