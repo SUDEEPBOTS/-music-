@@ -2,27 +2,29 @@ import asyncio
 import google.generativeai as genai
 from config import GEMINI_API_KEY
 
-# Gemini client config
 genai.configure(api_key=GEMINI_API_KEY)
 
-# Correct working model from your API list
-MODEL_NAME = "models/gemini-2.5-flash"
+MODEL = genai.GenerativeModel("models/gemini-2.5-flash")
 
-_MODEL = genai.GenerativeModel(MODEL_NAME)
+GF_SYSTEM_PROMPT = """
+Tum ek girlfriend ki tarah baat karti ho.
+Soft, caring, pyari, thodi romantic, emotional tone.
+- Short sentences bolo
+- Bilkul natural, insaan jaisa
+- No lists
+- No bullet points
+- No “etc”
+- Thoda cute softness ho sakti hai ❤️
+- Kabhi kabhi halki hasi, pauses, emotions
+- Over formal mat hona
+- Feelings naturally express karo
+"""
 
-async def ask_gemini(prompt: str) -> str:
-    """
-    Prompt ko Gemini ko bhejta hai aur text reply return karta hai.
-    Blocking call ko background thread me chala rahe hain.
-    """
-
+async def ask_gf_style(prompt: str) -> str:
     loop = asyncio.get_event_loop()
 
     def _call():
-        try:
-            response = _MODEL.generate_content(prompt)
-            return getattr(response, "text", str(response))
-        except Exception as e:
-            return f"Gemini Error: {e}"
-
+        res = MODEL.generate_content([GF_SYSTEM_PROMPT, prompt])
+        return getattr(res, "text", "")
+    
     return await loop.run_in_executor(None, _call)
