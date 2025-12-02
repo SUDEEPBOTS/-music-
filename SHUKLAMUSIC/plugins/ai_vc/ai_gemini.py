@@ -1,25 +1,28 @@
 import asyncio
-
 import google.generativeai as genai
 from config import GEMINI_API_KEY
 
-# Gemini client configure karo
+# Gemini client config
 genai.configure(api_key=GEMINI_API_KEY)
 
-# Fast + cheap model
-_MODEL = genai.GenerativeModel("gemini-1.5-flash")
+# Correct working model from your API list
+MODEL_NAME = "models/gemini-2.5-flash"
 
+_MODEL = genai.GenerativeModel(MODEL_NAME)
 
 async def ask_gemini(prompt: str) -> str:
     """
-    Prompt ko Gemini ko bhejta hai aur reply return karta hai.
-    Blocking call ko thread me chala rahe hain taki bot lag na kare.
+    Prompt ko Gemini ko bhejta hai aur text reply return karta hai.
+    Blocking call ko background thread me chala rahe hain.
     """
+
     loop = asyncio.get_event_loop()
 
     def _call():
-        response = _MODEL.generate_content(prompt)
-        # .text normally main answer hota hai
-        return getattr(response, "text", str(response))
+        try:
+            response = _MODEL.generate_content(prompt)
+            return getattr(response, "text", str(response))
+        except Exception as e:
+            return f"Gemini Error: {e}"
 
     return await loop.run_in_executor(None, _call)
