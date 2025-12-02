@@ -106,8 +106,9 @@ PLAYLIST_FETCH_LIMIT = int(getenv("PLAYLIST_FETCH_LIMIT", 25))
 TG_AUDIO_FILESIZE_LIMIT = int(getenv("TG_AUDIO_FILESIZE_LIMIT", "5242880000"))
 TG_VIDEO_FILESIZE_LIMIT = int(getenv("TG_VIDEO_FILESIZE_LIMIT", "5242880000"))
 # --------------------------------------------------------------------------------------
+GEMINI_API_KEY = getenv("GEMINI_API_KEY")
 # ---------------------------------------------------------------------------------------
-
+# ---------------------------------------------------------------------------------------
 
 
 # ------------------------------------
